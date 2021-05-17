@@ -1,0 +1,59 @@
+---
+title: "Lab6"
+author: "Nicole Riordan"
+date: "5/16/2021"
+output: html_document
+---
+
+```{r setup, ```{r setup, cache = F}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+github repository
+
+https://github.com/Adventures-R/twelvedays.git
+
+
+```{r}
+library(twelvedays)
+```
+
+```{r}
+xmas2 <- read.csv("https://www.dropbox.com/s/ap2hqssese1ki4j/xmas_2.csv?dl=1")
+pluralize_gift <- function(gift){
+gift <- gift %>%
+paste0("s")
+new <- gift
+str_replace(gift ,"ys$", "ies")
+str_replace(gift ,"ooses", "eese")
+return(new)
+}
+pluralize_gift (xmas2$Gift.Item)
+xmas2 <- xmas2 %>%
+  mutate(Gift.Item = as.vector(Gift.Item))%>%
+  mutate(Gift.Item = paste0(xmas2$Gift.Item, "s"))%>%
+  mutate(Gift.Item = str_replace_all(Gift.Item, "ys$", "ies"))%>%
+  mutate(Gift.Item = str_replace_all(Gift.Item, "ooses", "eese"))
+make_phrase <- function(num_word, item, verb, adjective, location){
+  verb <- str_replace_na(verb, "")
+  location <- str_replace_na(location, "")
+  adjective <- str_replace_na(adjective, "")
+ phrase <- str_c (num_word, adjective, item, verb, location, sep = " ")
+return (phrase)
+}
+make_phrase( num_word = "ten", item = "lords", verb = "a-leaping", adjective = "", location = "")
+
+xmas2 <- xmas2 %>%
+  mutate(
+    Full.Phrase = make_phrase(Day, Gift.Item, Verb, Adjective, Location)
+  )
+sing_day2 <- function(dataset, dayword, day, fullphrase)
+  for (i in seq_along(list(fullphrase))) {
+cat("On the", dayword, "day of Christmas\n")
+ cat("My true love gave to me:\n")
+cat(paste(fullphrase[i:1], collapse = "\n"), "\n\n")
+}
+pmap(xmas2, ~sing_day2(xmas,..2, ..1, ..7))
+
+```
+
